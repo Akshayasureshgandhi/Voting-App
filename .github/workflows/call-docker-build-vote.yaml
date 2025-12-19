@@ -1,0 +1,37 @@
+name: Build Vote
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'vote/**'
+      - '.github/workflows/build-vote.yaml'
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - 'vote/**'
+      - '.github/workflows/build-vote.yaml'
+
+jobs:
+  build-vote:
+    name: Build and Test Vote App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: vote
+
+      - name: Run tests
+        run: npm test
+        working-directory: vote
