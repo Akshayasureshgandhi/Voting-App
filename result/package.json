@@ -1,12 +1,14 @@
 {
   "name": "result",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend service for result processing in the Voting App",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "build": "echo \"No build step required for backend\"",
+    "test": "echo \"No tests defined\" && exit 0"
   },
-  "author": "",
+  "author": "Akshaya Gandhi",
   "license": "MIT",
   "dependencies": {
     "async": "^3.1.0",
