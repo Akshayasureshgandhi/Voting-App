@@ -1,0 +1,86 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+ paths:
+  include:
+   - vote/*
+
+resources:
+- repo: self
+
+variables:
+- name: dockerRegistryServiceConnection
+  value: 5929c456-e549-4467-828b-9e04fddf8edf
+- name: acrName
+  value: akshacicd
+- name: imageName
+  value: votingapp
+- name: imageRepository
+  value: $(acrName).azurecr.io/$(imageName)
+- name: tag
+  value: $(Build.BuildId)
+
+pool:
+ name: 'azureagent'
+
+stages:
+- stage: Build
+  displayName: "Build"
+  jobs:
+  - job: Build
+    displayName: "Build vote image"
+    steps:
+    - checkout: self
+    - task: Docker@2
+      displayName: "Build the image"
+      inputs:
+        command: 'build'
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: $(imageName)
+        dockerfile: vote/Dockerfile
+        tags: |
+          $(tag)
+- stage: Push
+  displayName: Push
+  dependsOn: Build
+  jobs:
+  - job: Push
+    displayName: Push
+    steps:
+    - checkout: self
+    - task: Docker@2
+      displayName: Push the image
+      inputs:
+        command: 'push'
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: $(imageName)
+        tags: |
+          $(tag)
+- stage: Update
+  displayName: "Update Kubernetes Manifests"
+  dependsOn: Push
+
+  jobs:
+  - job: Update
+    displayName: "Update Kubernetes Manifests"
+    steps:
+    - checkout: self
+      persistCredentials: true
+
+    - script: |
+        echo "Normalizing line endings for updateK8sManifests.sh"
+        sed -i 's/\r$//' scripts/updateK8sManifests.sh
+        chmod +x scripts/updateK8sManifests.sh
+      displayName: "Prepare update script"
+
+    - script: |
+        echo "Running manifest update..."
+        echo "IMAGE_REPOSITORY = $IMAGE_REPOSITORY"
+        echo "TAG = $TAG"
+        bash scripts/updateK8sManifests.sh vote "$IMAGE_REPOSITORY" "$TAG"
+      displayName: "Run updateK8sManifests.sh"
+      env:
+        IMAGE_REPOSITORY: $(imageRepository)
+        TAG: $(tag)
