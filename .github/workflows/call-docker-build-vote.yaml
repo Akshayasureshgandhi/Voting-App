@@ -32,11 +32,6 @@ jobs:
         run: npm install
         working-directory: vote
 
-      # Optional build step — remove if not needed
-      - name: Run build
-        run: npm run build
-        working-directory: vote
-
       - name: Run tests
         run: npm test
         working-directory: vote
