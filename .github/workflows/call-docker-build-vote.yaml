@@ -6,13 +6,13 @@ on:
       - 'main'
     paths:
       - 'vote/**'
-      - '.github/workflows/build-vote.yaml'
+      - '.github/workflows/call-docker-build-vote.yaml'
   pull_request:
     branches:
       - 'main'
     paths:
       - 'vote/**'
-      - '.github/workflows/build-vote.yaml'
+      - '.github/workflows/call-docker-build-vote.yaml'
 
 jobs:
   build-vote:
