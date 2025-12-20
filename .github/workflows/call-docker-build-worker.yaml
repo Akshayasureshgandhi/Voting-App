@@ -6,13 +6,13 @@ on:
       - 'main'
     paths:
       - 'worker/**'
-      - '.github/workflows/build-worker.yaml'
+      - '.github/workflows/call-docker-build-worker.yaml'
   pull_request:
     branches:
       - 'main'
     paths:
       - 'worker/**'
-      - '.github/workflows/build-worker.yaml'
+      - '.github/workflows/call-docker-build-worker.yaml'
 
 jobs:
   build-worker:
