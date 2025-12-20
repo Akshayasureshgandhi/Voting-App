@@ -16,27 +16,26 @@ on:
 
 jobs:
   build-worker:
-    name: Build and Test Worker
+    name: Build and Test Worker App (.NET)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
-          node-version: '18'
+          dotnet-version: '6.0.x'   # or 8.0.x if your project targets .NET 8
 
-      - name: Install dependencies
-        run: npm install
+      - name: Restore dependencies
+        run: dotnet restore
         working-directory: worker
 
-      # Optional build step — remove if not needed
-      - name: Run build
-        run: npm run build
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
         working-directory: worker
 
       - name: Run tests
-        run: npm test
+        run: dotnet test --no-build --verbosity normal --configuration Release
         working-directory: worker
