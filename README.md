@@ -1,4 +1,4 @@
-# Example Voting App
+# Voting App
 
 A simple distributed application running across multiple Docker containers.
 
@@ -9,4 +9,5 @@ A simple distributed application running across multiple Docker containers.
 * A .NET worker which consumes votes and stores them in…
 * A Postgres database backed by a Docker volume
 * A Node.js web app which shows the results of the voting in real time
+
 
